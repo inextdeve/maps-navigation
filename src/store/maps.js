@@ -1,15 +1,15 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const { reducer, actions } = createSlice({
-  name: 'maps',
+  name: "maps",
   initialState: {
     // Set Map Camera Position
-    cameraPosition: [],
+    currentPosition: [],
   },
   reducers: {
-    setCameraPosition(state, action) {
-      state.cameraPosition = action.payload;
-    }
+    setCurrentPosition(state, action) {
+      state.currentPosition = action.payload;
+    },
   },
 });
 
