@@ -3,71 +3,12 @@ import { map } from "../core/MapView";
 import { useSelector, useDispatch } from "react-redux";
 import { mapsActions } from "../../store";
 
-/*
-{ coordinates: [-6.9794782, 33.909968], approach: 'unrestricted' }, // Starting point Temara
-                { coordinates: [-7.4300942, 33.6874444], approach: 'curb' }, // Waypoint 1
-                { coordinates: [-7.669393, 33.5724032], approach: 'curb' }, // Waypoint 2
-*/
-
-// By default Lat, Lng
-const stops = [
-  [33.909968, -6.9794782],
-  [33.6874444, -7.4300942],
-  [33.5724032, -7.669393],
-  [33.3136606, -8.1676697],
-  [33.2502693, -8.3348948],
-  [33.2334864, -8.5242641],
-  [33.1953071, -8.5935188],
-].map((i) => i.reverse());
 const Directions = () => {
   const dispatch = useDispatch();
+  const {steps, currentPosition} = useSelector(state => state.maps);
 
   useEffect(() => {
-    //Point for the start
-    map.addSource("start", {
-      type: "geojson",
-      data: {
-        type: "FeatureCollection",
-        features: [],
-      },
-    });
-
-    //Point for the End
-    map.addSource("end", {
-      type: "geojson",
-      data: {
-        type: "FeatureCollection",
-        features: [],
-      },
-    });
-
-    //Add a layer of type circle for the start and end, connected to those sources. Use the circle-color paint property to make the start circle white and the end circle black.
-    map.addLayer({
-      id: "start-circle",
-      type: "circle",
-      source: "start",
-      paint: {
-        "circle-radius": 6,
-        "circle-color": "white",
-        "circle-stroke-color": "black",
-        "circle-stroke-width": 2,
-      },
-    });
-
-    map.addLayer({
-      id: "end-circle",
-      type: "circle",
-      source: "end",
-      paint: {
-        "circle-radius": 7,
-        "circle-color": "black",
-      },
-    });
-
-    map.getSource("start").setData({
-      type: "Point",
-      coordinates: [-6.9794782, 33.909968],
-    });
+    if (!currentPosition.length || !steps.length) return;
 
     //Route Layer Function here
     map.addSource("route", {
@@ -89,11 +30,11 @@ const Directions = () => {
         "line-opacity": 0.6,
       },
     });
-
+    
     // Solve the route
     arcgisRest
       .solveRoute({
-        stops,
+        stops: [currentPosition, ...steps],
         endpoint:
           "https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World/solve",
         authentication:
@@ -101,40 +42,25 @@ const Directions = () => {
       })
 
       .then((response) => {
-        console.log(response.routes.geoJson.features[0].geometry.coordinates);
+        // Next step is the next position after the current position used for calculating camera position
+        const nextStep = response.routes.geoJson.features[0].geometry.coordinates[0][1];
+        
+        dispatch(mapsActions.setNextStep(nextStep || []));
 
-        // let i = 0;
-        // const id = setInterval(() => {
-        //   if (
-        //     response.routes.geoJson.features[0].geometry.coordinates[0].length <
-        //     2
-        //   )
-        //     clearInterval(id);
-
-        //   response.routes.geoJson.features[0].geometry.coordinates[0] =
-        //     response.routes.geoJson.features[0].geometry.coordinates[0].slice(
-        //       i
-        //     );
-
-        //   setCameraPosition(
-        //     response.routes.geoJson.features[0].geometry.coordinates[0].slice(
-        //       i
-        //     )[0]
-        //   );
-
-        //   ++i;
-
-        // }, 500);
         map.getSource("route").setData(response.routes.geoJson);
       })
 
       .catch((error) => {
         console.error(error);
         alert(
-          "There was a problem using the route service. See the console for details."
+          "There was a problem using the route service."
         );
       });
-  }, []);
+      return (() => {
+        map.removeLayer("route-line");
+        map.removeSource("route");
+      });
+  }, [steps]);
   return null;
 };
 

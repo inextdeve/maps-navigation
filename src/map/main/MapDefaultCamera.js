@@ -25,7 +25,7 @@ const arrToObjPosition = (arr) => {
   if (arr.length < 2) {
     throw new Error("arrToObjPosition(): Invalid arr");
   }
-  return { lat: arr[0], lon: arr[1] };
+  return { lat: arr[1], lon: arr[0] };
 };
 
 const MapDefaultCamera = () => {
@@ -33,15 +33,15 @@ const MapDefaultCamera = () => {
   const defaultLongitude = 49.2185405;
   const defaultZoom = 0;
 
-  const { currentPosition, targetPosition } = useSelector(
+  const { currentPosition, nextStep } = useSelector(
     (state) => state.maps
   );
 
   useEffect(() => {
-    if (currentPosition.length && targetPosition.length) {
+    if (currentPosition?.length && nextStep?.length) {
       const bearingAngle = calculateBearing(
         arrToObjPosition(currentPosition),
-        arrToObjPosition(targetPosition)
+        arrToObjPosition(nextStep)
       );
 
       // Define the new camera parameters
@@ -60,18 +60,8 @@ const MapDefaultCamera = () => {
 
       // Use the flyTo method to smoothly transition to the new camera parameters
       map.flyTo(newCameraParams, animationOptions);
-    } else if (currentPosition.length) {
-      map.jumpTo({
-        center: currentPosition,
-        zoom: Math.max(map.getZoom(), 10),
-      });
-    } else {
-      map.jumpTo({
-        center: [defaultLongitude, defaultLatitude],
-        zoom: Math.max(map.getZoom(), 10),
-      });
     }
-  }, [defaultLatitude, defaultLongitude, defaultZoom, currentPosition]);
+  }, [defaultLatitude, defaultLongitude, defaultZoom, currentPosition, nextStep]);
 
   return null;
 };

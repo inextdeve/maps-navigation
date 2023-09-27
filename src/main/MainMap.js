@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,19 +20,14 @@ import MapNotification from '../map/notification/MapNotification';
 import useFeatures from '../common/util/useFeatures';
 import Directions from '../map/directions/Directions';
 
+
+
 const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
 
-  const eventsAvailable = useSelector((state) => !!state.events.items.length);
-
-  const features = useFeatures();
-
-  const onMarkerClick = useCallback((_, deviceId) => {
-    dispatch(devicesActions.selectId(deviceId));
-  }, [dispatch]);
 
   return (
     <>
@@ -47,7 +42,7 @@ const MainMap = ({ filteredPositions, selectedPosition, onEventsClick }) => {
       </MapView>
       <MapScale />
       <MapCurrentLocation />
-      <MapGeocoder />
+      {/* <MapGeocoder /> For search a place*/}
       {desktop && (
         <MapPadding left={parseInt(theme.dimensions.drawerWidthDesktop, 10)} />
       )}

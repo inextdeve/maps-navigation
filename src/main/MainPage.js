@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import DeviceList from './DeviceList';
 import BottomMenu from '../common/components/BottomMenu';
 import StatusCard from '../common/components/StatusCard';
-import { devicesActions } from '../store';
+import { devicesActions,mapsActions } from '../store';
 import usePersistedState from '../common/util/usePersistedState';
 import EventsDrawer from './EventsDrawer';
 import useFilter from './useFilter';
@@ -62,6 +62,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const stops = [
+  [33.909968, -6.9794782],
+  [33.6874444, -7.4300942],
+  [33.5724032, -7.669393],
+  [33.3136606, -8.1676697],
+  [33.2502693, -8.3348948],
+  [33.2334864, -8.5242641],
+  [33.1953071, -8.5935188],
+].map((i) => i.reverse());
+
 const MainPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -91,6 +101,14 @@ const MainPage = () => {
 
   const onEventsClick = useCallback(() => setEventsOpen(true), [setEventsOpen]);
 
+  
+  useEffect(() => {
+    const id = setTimeout(() => {
+      dispatch(mapsActions.setSteps(stops))
+    }, 5000);
+    
+  },[])
+
   useEffect(() => {
     if (!desktop && mapOnSelect && selectedDeviceId) {
       setDevicesOpen(false);
@@ -101,6 +119,7 @@ const MainPage = () => {
 
   return (
     <div className={classes.root}>
+      
       {desktop && (
         <MainMap/>
       )}
