@@ -2,10 +2,10 @@ import { useEffect } from "react";
 import { map } from "../core/MapView";
 import { useSelector, useDispatch } from "react-redux";
 import { mapsActions } from "../../store";
-
+// ['lng', lat]
 const Directions = () => {
   const dispatch = useDispatch();
-  const {steps, currentPosition} = useSelector(state => state.maps);
+  const { steps, currentPosition } = useSelector((state) => state.maps);
 
   useEffect(() => {
     if (!currentPosition.length || !steps.length) return;
@@ -30,7 +30,7 @@ const Directions = () => {
         "line-opacity": 0.6,
       },
     });
-    
+
     // Solve the route
     arcgisRest
       .solveRoute({
@@ -43,8 +43,9 @@ const Directions = () => {
 
       .then((response) => {
         // Next step is the next position after the current position used for calculating camera position
-        const nextStep = response.routes.geoJson.features[0].geometry.coordinates[0][1];
-        
+        const nextStep =
+          response.routes.geoJson.features[0].geometry.coordinates[0][1];
+
         dispatch(mapsActions.setNextStep(nextStep || []));
 
         map.getSource("route").setData(response.routes.geoJson);
@@ -52,14 +53,12 @@ const Directions = () => {
 
       .catch((error) => {
         console.error(error);
-        alert(
-          "There was a problem using the route service."
-        );
+        alert("There was a problem using the route service.");
       });
-      return (() => {
-        map.removeLayer("route-line");
-        map.removeSource("route");
-      });
+    return () => {
+      map.removeLayer("route-line");
+      map.removeSource("route");
+    };
   }, [steps]);
   return null;
 };

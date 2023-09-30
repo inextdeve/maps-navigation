@@ -6,8 +6,8 @@ const { reducer, actions } = createSlice({
     steps: [],
     // Set Map Camera Position
     currentPosition: [],
-    // Next step is the next pos[lng, lat] after current is used for adpting the camera of the map
-    nextStep: []
+    // Next step is the next pos[lng, lat] after current is used for adapting the camera of the map
+    nextStep: [],
   },
   reducers: {
     setCurrentPosition(state, action) {
@@ -19,7 +19,6 @@ const { reducer, actions } = createSlice({
     setSteps(state, action) {
       state.steps = action.payload;
     },
-    
   },
 });
 
