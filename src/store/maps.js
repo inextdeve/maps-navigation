@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const { reducer, actions } = createSlice({
   name: "maps",
   initialState: {
+    routes: [],
     steps: [],
     // Set Map Camera Position
     currentPosition: [],
@@ -18,6 +19,9 @@ const { reducer, actions } = createSlice({
     },
     setSteps(state, action) {
       state.steps = action.payload;
+    },
+    setRoutes(state, action) {
+      state.routes = action.payload;
     },
   },
 });

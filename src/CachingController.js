@@ -1,9 +1,10 @@
 import { useDispatch, useSelector, connect } from 'react-redux';
 
 import {
-  geofencesActions, groupsActions, driversActions, maintenancesActions, calendarsActions,
+  mapsActions
 } from './store';
 import { useEffectAsync } from './reactHelper';
+import { TOKEN } from './common/util/constants';
 
 const CachingController = () => {
   const authenticated = useSelector((state) => !!state.session.user);
@@ -11,53 +12,11 @@ const CachingController = () => {
 
   useEffectAsync(async () => {
     if (authenticated) {
-      const response = await fetch('/api/geofences');
+      const response = await fetch('/v2/api/routes', {
+        headers: { Authorization: `Bearer ${TOKEN}` },
+      });
       if (response.ok) {
-        dispatch(geofencesActions.update(await response.json()));
-      } else {
-        throw Error(await response.text());
-      }
-    }
-  }, [authenticated]);
-
-  useEffectAsync(async () => {
-    if (authenticated) {
-      const response = await fetch('/api/groups');
-      if (response.ok) {
-        dispatch(groupsActions.update(await response.json()));
-      } else {
-        throw Error(await response.text());
-      }
-    }
-  }, [authenticated]);
-
-  useEffectAsync(async () => {
-    if (authenticated) {
-      const response = await fetch('/api/drivers');
-      if (response.ok) {
-        dispatch(driversActions.update(await response.json()));
-      } else {
-        throw Error(await response.text());
-      }
-    }
-  }, [authenticated]);
-
-  useEffectAsync(async () => {
-    if (authenticated) {
-      const response = await fetch('/api/maintenance');
-      if (response.ok) {
-        dispatch(maintenancesActions.update(await response.json()));
-      } else {
-        throw Error(await response.text());
-      }
-    }
-  }, [authenticated]);
-
-  useEffectAsync(async () => {
-    if (authenticated) {
-      const response = await fetch('/api/calendars');
-      if (response.ok) {
-        dispatch(calendarsActions.update(await response.json()));
+        dispatch(mapsActions.setRoutes(await response.json()));
       } else {
         throw Error(await response.text());
       }

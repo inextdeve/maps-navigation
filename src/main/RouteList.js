@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   FormControl,
   InputLabel,
@@ -10,9 +10,8 @@ import {
 import { makeStyles } from "@mui/styles";
 import DirectionsIcon from "@mui/icons-material/Directions";
 import fetcher from "../common/util/fetcher";
-import { useEffectAsync } from "../reactHelper";
 import { TOKEN, URL } from "../common/util/constants";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { mapsActions } from "../store";
 
 const useStyles = makeStyles((theme) => ({
@@ -49,22 +48,9 @@ const useStyles = makeStyles((theme) => ({
 const RouteList = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const [selectedRoute, setSelectedRoute] = useState({ id: "", name: "" });
-  const [routes, setRoutes] = useState([]);
+  const [selectedRoute, setSelectedRoute] = useState({});
+  const routes = useSelector(state => state.maps.routes)
   const setSteps = (payload) => dispatch(mapsActions.setSteps(payload));
-
-  useEffectAsync(async () => {
-    try {
-      const response = await fetcher(URL + "/api/routes", {
-        headers: { Authorization: `Bearer ${TOKEN}` },
-      });
-      const data = await response.json();
-
-      setRoutes(data.map((route) => ({ id: route.id, name: route.rout_code })));
-    } catch (error) {
-      console.log("Eror: => ", error);
-    }
-  }, []);
 
   const handleClick = async () => {
     try {
@@ -96,7 +82,7 @@ const RouteList = () => {
         >
           {routes.map((route) => (
             <MenuItem selected value={route.id} key={route.id}>
-              {route.name}
+              {route.rout_code}
             </MenuItem>
           ))}
         </Select>
