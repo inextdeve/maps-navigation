@@ -105,7 +105,7 @@ const LoginPage = () => {
       let token = "";
       try {
         const expiration = moment().add(6, "months").toISOString();
-        const response = await fetch("/api/session/token", {
+        const response = await fetch("http://s1.rcj.care/api/session/token", {
           method: "POST",
           body: new URLSearchParams(`expiration=${expiration}`),
         });
@@ -122,7 +122,7 @@ const LoginPage = () => {
   const handlePasswordLogin = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch("/api/session", {
+      const response = await fetch("http://s1.rcj.care/api/session", {
         method: "POST",
         body: new URLSearchParams(
           `email=${encodeURIComponent(email)}&password=${encodeURIComponent(
@@ -134,7 +134,7 @@ const LoginPage = () => {
         const user = await response.json();
         generateLoginToken();
         dispatch(sessionActions.updateUser(user));
-        navigate("/");
+        navigate("/navigation");
       } else {
         throw Error(await response.text());
       }
@@ -146,12 +146,12 @@ const LoginPage = () => {
 
   const handleTokenLogin = useCatch(async (token) => {
     const response = await fetch(
-      `/api/session?token=${encodeURIComponent(token)}`
+      `http://s1.rcj.care/api/session?token=${encodeURIComponent(token)}`
     );
     if (response.ok) {
       const user = await response.json();
       dispatch(sessionActions.updateUser(user));
-      navigate("/");
+      navigate("/navigation");
     } else {
       throw Error(await response.text());
     }

@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffectAsync } from '../../reactHelper';
-import { sessionActions } from '../../store';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffectAsync } from "../../reactHelper";
+import { sessionActions } from "../../store";
 
-export const nativeEnvironment = window.appInterface || (window.webkit && window.webkit.messageHandlers.appInterface);
+export const nativeEnvironment =
+  window.appInterface ||
+  (window.webkit && window.webkit.messageHandlers.appInterface);
 
 export const nativePostMessage = (message) => {
   if (window.webkit && window.webkit.messageHandlers.appInterface) {
@@ -38,24 +40,29 @@ const NativeInterface = () => {
 
   useEffectAsync(async () => {
     if (user && notificationToken) {
-      window.localStorage.setItem('notificationToken', notificationToken);
+      window.localStorage.setItem("notificationToken", notificationToken);
       setNotificationToken(null);
 
-      const tokens = user.attributes.notificationTokens?.split(',') || [];
+      const tokens = user.attributes.notificationTokens?.split(",") || [];
       if (!tokens.includes(notificationToken)) {
         const updatedUser = {
           ...user,
           attributes: {
             ...user.attributes,
-            notificationTokens: [...tokens.slice(-2), notificationToken].join(','),
+            notificationTokens: [...tokens.slice(-2), notificationToken].join(
+              ","
+            ),
           },
         };
 
-        const response = await fetch(`/api/users/${user.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updatedUser),
-        });
+        const response = await fetch(
+          `http://s1.rcj.care/api/users/${user.id}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedUser),
+          }
+        );
 
         if (response.ok) {
           dispatch(sessionActions.updateUser(await response.json()));

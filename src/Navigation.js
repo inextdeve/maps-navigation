@@ -8,8 +8,8 @@ import App from "./App";
 const Navigation = () => {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/" element={<App />}>
+      <Route path="/navigation/login" element={<LoginPage />} />
+      <Route path="/navigation" element={<App />}>
         <Route index element={<MainPage />} />
       </Route>
     </Routes>
