@@ -1,6 +1,6 @@
 {
-  "name": "traccar",
-  "version": "5.7.0",
+  "name": "maps-navigation",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.6",

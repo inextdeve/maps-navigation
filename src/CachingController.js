@@ -1,10 +1,8 @@
-import { useDispatch, useSelector, connect } from 'react-redux';
+import { useDispatch, useSelector, connect } from "react-redux";
 
-import {
-  mapsActions
-} from './store';
-import { useEffectAsync } from './reactHelper';
-import { TOKEN } from './common/util/constants';
+import { mapsActions } from "./store";
+import { useEffectAsync } from "./reactHelper";
+import { TOKEN } from "./common/util/constants";
 
 const CachingController = () => {
   const authenticated = useSelector((state) => !!state.session.user);
@@ -12,7 +10,7 @@ const CachingController = () => {
 
   useEffectAsync(async () => {
     if (authenticated) {
-      const response = await fetch('/v2/api/routes', {
+      const response = await fetch("/v2/api/routes", {
         headers: { Authorization: `Bearer ${TOKEN}` },
       });
       if (response.ok) {
