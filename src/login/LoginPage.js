@@ -134,7 +134,7 @@ const LoginPage = () => {
         const user = await response.json();
         generateLoginToken();
         dispatch(sessionActions.updateUser(user));
-        navigate("/navigation");
+        navigate("/");
       } else {
         throw Error(await response.text());
       }
@@ -151,7 +151,7 @@ const LoginPage = () => {
     if (response.ok) {
       const user = await response.json();
       dispatch(sessionActions.updateUser(user));
-      navigate("/navigation");
+      navigate("/");
     } else {
       throw Error(await response.text());
     }
