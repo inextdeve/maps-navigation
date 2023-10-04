@@ -10,7 +10,7 @@ const CachingController = () => {
 
   useEffectAsync(async () => {
     if (authenticated) {
-      const response = await fetch("/v2/api/routes", {
+      const response = await fetch("https://s1.rcj.care/v2/api/routes", {
         headers: { Authorization: `Bearer ${TOKEN}` },
       });
       if (response.ok) {
