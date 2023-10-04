@@ -1,19 +1,11 @@
-import React, { useState } from 'react';
-import {
-  Route, Routes, useLocation, useNavigate,
-} from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { LinearProgress } from '@mui/material';
-import MainPage from './main/MainPage';
-import LoginPage from './login/LoginPage';
-import useQuery from './common/util/useQuery';
-import { useEffectAsync } from './reactHelper';
-import { devicesActions } from './store';
+import React from "react";
+import { Route, Routes } from "react-router-dom";
+import MainPage from "./main/MainPage";
+import LoginPage from "./login/LoginPage";
 
-import App from './App';
+import App from "./App";
 
 const Navigation = () => {
-
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
